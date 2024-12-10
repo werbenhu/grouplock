@@ -111,11 +111,17 @@ func (gl *KLocker) cleanup() {
 		// If the lock is no longer in use, delete it
 		if item, ok := gl.locks.Load(k); ok {
 			lockData := item.(*lockItem)
-			// If the reference count is 0 or less, the lock can be safely deleted
+
+			// Lock the mutex before accessing or modifying the count
+			lockData.mutex.Lock()
+
+			// Check if the reference count is 0 or less, then delete the lock
 			if atomic.LoadInt32(&lockData.count) <= 0 {
 				gl.locks.Delete(k)
 				keysToRemove = append(keysToRemove, k)
 			}
+
+			lockData.mutex.Unlock() // Unlock after operation
 		}
 
 		return true

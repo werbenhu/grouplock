@@ -24,7 +24,7 @@ func sharedLock(wg *sync.WaitGroup) {
 }
 
 // groupLockTest simulates locking and unlocking keys using KLocker.
-func groupLockTest(kl *KLocker, keys []string, wg *sync.WaitGroup) {
+func kLockerTest(kl *KLocker, keys []string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// Randomly lock one of the keys
@@ -76,7 +76,7 @@ func BenchmarkKeyLocker(b *testing.B) {
 		// Start goroutines
 		for k := 0; k < goroutineCount; k++ {
 			wg.Add(1)
-			go groupLockTest(kl, keys, &wg)
+			go kLockerTest(kl, keys, &wg)
 		}
 		wg.Wait()
 	}
