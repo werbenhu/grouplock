@@ -9,7 +9,6 @@
 
 - Lock management for keys with reference counting.
 - Automatic cleanup of unused locks at configurable intervals.
-- Simple API for locking/unlocking keys using a default instance.
 
 ## Installation
 
