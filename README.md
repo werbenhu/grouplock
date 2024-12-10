@@ -27,25 +27,25 @@ You can create a new klocker with an optional cleanup interval (default is 30 mi
 
 ```go
 // Default interval 30 minutes
-kl := klocker.New() 
+mu := klocker.New() 
 
 // Custom interval
-kl := klocker.New(klocker.WithCleanInterval(time.Hour)) 
+mu := klocker.New(klocker.WithCleanInterval(time.Hour)) 
 ```
 
 #### Locking and Unlocking Keys
 To acquire and release the lock for a specific key:
 
 ```go
-kl.Lock("key")
-kl.Unlock("key")
+mu.Lock("key")
+mu.Unlock("key")
 ```
 
 ### Stopping the Cleaner
 
 To stop the cleaner goroutine that periodically cleans up unused locks:
 ```go
-kl.Stop()
+mu.Stop()
 ```
 
 ### Options

@@ -10,7 +10,7 @@ import (
 
 var (
 	sharedMutex  sync.Mutex
-	sleepTime    = time.Millisecond * 10
+	workTime     = time.Millisecond * 10
 	numberOfKeys = 1000
 )
 
@@ -19,19 +19,19 @@ func sharedLock(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	sharedMutex.Lock()
-	time.Sleep(sleepTime)
+	time.Sleep(workTime)
 	sharedMutex.Unlock()
 }
 
 // groupLockTest simulates locking and unlocking keys using KLocker.
-func kLockerTest(kl *KLocker, keys []string, wg *sync.WaitGroup) {
+func kLockerTest(kl *Mutex, keys []string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// Randomly lock one of the keys
 	key := keys[rand.Intn(len(keys))]
 	kl.Lock(key)
 	// Simulate some work
-	time.Sleep(sleepTime)
+	time.Sleep(workTime)
 	kl.Unlock(key)
 }
 

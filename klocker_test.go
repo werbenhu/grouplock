@@ -65,7 +65,7 @@ func TestKeyLocker_LockMultipleUsers(t *testing.T) {
 
 func TestKeyLocker_AutomaticCleanup(t *testing.T) {
 	// Initialize KeyLocker with cleanup interval of 1 second for testing
-	kl := New(WithCleanInterval(1 * time.Second))
+	kl := New(WithInterval(1 * time.Second))
 
 	// Lock some keys
 	keys := []string{"user1", "user2", "user3"}
@@ -96,7 +96,7 @@ func TestKeyLocker_AutomaticCleanup(t *testing.T) {
 
 func TestKeyLocker_LockCleanupAfterUnlock(t *testing.T) {
 	// Initialize KeyLocker with a short cleanup interval
-	kl := New(WithCleanInterval(1 * time.Second))
+	kl := New(WithInterval(1 * time.Second))
 
 	// Lock a key
 	key := "user1"
@@ -118,7 +118,7 @@ func TestKeyLocker_LockCleanupAfterUnlock(t *testing.T) {
 
 func TestKeyLocker_StopCleaner(t *testing.T) {
 	// Initialize KeyLocker
-	kl := New(WithCleanInterval(1 * time.Second))
+	kl := New(WithInterval(1 * time.Second))
 
 	// Lock a key
 	key := "user1"
@@ -137,7 +137,7 @@ func TestKeyLocker_StopCleaner(t *testing.T) {
 
 func TestKeyLocker_MultipleLocksOnSameKey(t *testing.T) {
 	// Initialize KeyLocker
-	kl := New(WithCleanInterval(1 * time.Second))
+	kl := New(WithInterval(1 * time.Second))
 
 	// Lock the same key in two different goroutines
 	key := "user1"
