@@ -1,4 +1,4 @@
-module github.com/werbenhu/grouplock
+module github.com/werbenhu/klocker
 
 go 1.23.2
 

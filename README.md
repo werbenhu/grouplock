@@ -1,9 +1,9 @@
-# grouplock
+# klocker
 
 
-`grouplock` is a Go package for key-based locks with automatic cleanup.
+`klocker` is a Go package for key-based locks with automatic cleanup.
 
-`grouplock` provides a mechanism for managing locks on keys with support for automatic cleanup of unused locks. It allows you to acquire and release locks for specific keys and automatically cleans up locks that are no longer in use.
+`klocker` provides a mechanism for managing locks on keys with support for automatic cleanup of unused locks. It allows you to acquire and release locks for specific keys and automatically cleans up locks that are no longer in use.
 
 ## Features
 
@@ -12,40 +12,40 @@
 
 ## Installation
 
-To use the `grouplock` package, import it into your Go project:
+To use the `klocker` package, import it into your Go project:
 
 ```go
-import "github.com/werbenhu/grouplock"
+import "github.com/werbenhu/klocker"
 ```
 
 ### Usage
 
-#### Creating a New GroupLock
+#### Creating a New klocker
 
-You can create a new GroupLock with an optional cleanup interval (default is 30 minutes):
+You can create a new klocker with an optional cleanup interval (default is 30 minutes):
 
 
 ```go
 // Default interval 30 minutes
-gl := grouplock.New() 
+kl := klocker.New() 
 
 // Custom interval
-gl := grouplock.New(grouplock.WithCleanInterval(time.Hour)) 
+kl := klocker.New(klocker.WithCleanInterval(time.Hour)) 
 ```
 
 #### Locking and Unlocking Keys
 To acquire and release the lock for a specific key:
 
 ```go
-gl.Lock("key")
-gl.Unlock("key")
+kl.Lock("key")
+kl.Unlock("key")
 ```
 
 ### Stopping the Cleaner
 
 To stop the cleaner goroutine that periodically cleans up unused locks:
 ```go
-gl.Stop()
+kl.Stop()
 ```
 
 ### Options

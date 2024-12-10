@@ -1,4 +1,4 @@
-package grouplock
+package klocker
 
 import (
 	"sync"
@@ -8,8 +8,8 @@ import (
 
 const defaultCleanInterval = 30 * time.Minute
 
-// Option defines a function type for modifying GroupLock options.
-type Option func(*GroupLock)
+// Option defines a function type for modifying KLocker options.
+type Option func(*KLocker)
 
 // lockItem represents the lock data for each key, including the Mutex and reference count.
 type lockItem struct {
@@ -17,8 +17,8 @@ type lockItem struct {
 	count int32
 }
 
-// GroupLock provides locking for keys with support for automatic cleanup of unused locks.
-type GroupLock struct {
+// KLocker provides locking for keys with support for automatic cleanup of unused locks.
+type KLocker struct {
 	locks     sync.Map      // Map to store locks for each key
 	cleanKeys sync.Map      // Map to track keys that need to be cleaned up
 	closeCh   chan struct{} // Channel for stopping the cleanup goroutine
@@ -27,22 +27,22 @@ type GroupLock struct {
 
 // WithCleanInterval is an option that sets the cleanup interval.
 func WithCleanInterval(interval time.Duration) Option {
-	return func(gl *GroupLock) {
+	return func(gl *KLocker) {
 		if interval > 0 {
 			gl.interval = interval
 		}
 	}
 }
 
-// New creates a new GroupLock with provided options.
+// New creates a new KLocker with provided options.
 // It starts a background goroutine to periodically clean up unused locks.
-func New(opts ...Option) *GroupLock {
-	gl := &GroupLock{
+func New(opts ...Option) *KLocker {
+	gl := &KLocker{
 		closeCh:  make(chan struct{}),
 		interval: defaultCleanInterval, // Default cleanup interval
 	}
 
-	// Apply options to the GroupLock
+	// Apply options to the KLocker
 	for _, opt := range opts {
 		opt(gl)
 	}
@@ -54,7 +54,7 @@ func New(opts ...Option) *GroupLock {
 }
 
 // Lock acquires a lock for the given key. It increments the reference count and locks the mutex.
-func (gl *GroupLock) Lock(key string) {
+func (gl *KLocker) Lock(key string) {
 	// Load the existing lock item or create a new one
 	item, _ := gl.locks.LoadOrStore(key, &lockItem{
 		mutex: &sync.Mutex{},
@@ -70,7 +70,7 @@ func (gl *GroupLock) Lock(key string) {
 
 // Unlock releases the lock for the given key. It decrements the reference count.
 // If no references remain, it marks the key for cleanup.
-func (gl *GroupLock) Unlock(key string) {
+func (gl *KLocker) Unlock(key string) {
 	if item, ok := gl.locks.Load(key); ok {
 		lockData := item.(*lockItem)
 		// Unlock the mutex
@@ -86,7 +86,7 @@ func (gl *GroupLock) Unlock(key string) {
 }
 
 // cleaner is a background goroutine that periodically runs cleanup tasks.
-func (gl *GroupLock) cleaner() {
+func (gl *KLocker) cleaner() {
 	ticker := time.NewTicker(gl.interval)
 	defer ticker.Stop()
 
@@ -101,7 +101,7 @@ func (gl *GroupLock) cleaner() {
 }
 
 // cleanup removes the locks that are no longer in use.
-func (gl *GroupLock) cleanup() {
+func (gl *KLocker) cleanup() {
 	var keysToRemove []string
 
 	// Check each key marked for cleanup
@@ -128,6 +128,6 @@ func (gl *GroupLock) cleanup() {
 }
 
 // Stop stops the cleaner goroutine.
-func (gl *GroupLock) Stop() {
+func (gl *KLocker) Stop() {
 	close(gl.closeCh)
 }

@@ -1,4 +1,4 @@
-package grouplock
+package klocker
 
 import (
 	"math/rand"
@@ -23,16 +23,16 @@ func sharedLock(wg *sync.WaitGroup) {
 	sharedMutex.Unlock()
 }
 
-// groupLockTest simulates locking and unlocking keys using GroupLock.
-func groupLockTest(gl *GroupLock, keys []string, wg *sync.WaitGroup) {
+// groupLockTest simulates locking and unlocking keys using KLocker.
+func groupLockTest(kl *KLocker, keys []string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// Randomly lock one of the keys
 	key := keys[rand.Intn(len(keys))]
-	gl.Lock(key)
+	kl.Lock(key)
 	// Simulate some work
 	time.Sleep(sleepTime)
-	gl.Unlock(key)
+	kl.Unlock(key)
 }
 
 // BenchmarkSharedMutex tests the performance of shared mutex approach.
@@ -58,11 +58,11 @@ func BenchmarkSharedMutex(b *testing.B) {
 	}
 }
 
-// BenchmarkGroupLock tests the performance of GroupLock approach.
-func BenchmarkGroupLock(b *testing.B) {
+// BenchmarkKeyLocker tests the performance of KLocker approach.
+func BenchmarkKeyLocker(b *testing.B) {
 	goroutineCount := 1000
 	keys := make([]string, numberOfKeys)
-	gl := New()
+	kl := New()
 
 	// Generate numberOfKeys keys
 	for i := 0; i < numberOfKeys; i++ {
@@ -76,7 +76,7 @@ func BenchmarkGroupLock(b *testing.B) {
 		// Start goroutines
 		for k := 0; k < goroutineCount; k++ {
 			wg.Add(1)
-			go groupLockTest(gl, keys, &wg)
+			go groupLockTest(kl, keys, &wg)
 		}
 		wg.Wait()
 	}
